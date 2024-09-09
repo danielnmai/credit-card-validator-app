@@ -11,7 +11,14 @@ import {
 } from "@mantine/core";
 import { matches, useForm } from "@mantine/form";
 import axios, { AxiosError } from "axios";
-import { useState } from "react";
+import {
+  formatCreditCard,
+  registerCursorTracker,
+  type FormatCreditCardOptions,
+} from "cleave-zen";
+import { ChangeEvent, useEffect, useRef, useState } from "react";
+
+const cardOptions: FormatCreditCardOptions = { delimiter: " " };
 
 type ResponseData = {
   data: {
@@ -19,15 +26,13 @@ type ResponseData = {
   };
 };
 
-type FormType = {
-  cardNumber: string;
-};
-
 const API = "http://localhost:8000/validate";
 
 const Home = () => {
+  const inputRef = useRef(null);
   const [isValid, setIsValid] = useState<boolean | undefined>(undefined);
   const [isLoading, setIsLoading] = useState<boolean>();
+  const [cardNumber, setCardNumber] = useState<string>("");
 
   const form = useForm({
     initialValues: {
@@ -41,25 +46,61 @@ const Home = () => {
     },
   });
 
+  useEffect(() => {
+    if (form.isTouched()) {
+      setIsValid(undefined);
+    }
+  }, [form, isValid]);
+
+  // Handle cursor backtracking after adding delimiter to input
+  useEffect(() => {
+    return registerCursorTracker({
+      input: inputRef.current as unknown as HTMLInputElement,
+      delimiter: " ",
+    });
+  }, []);
+
   const renderValidationResult = () => {
     if (isValid == undefined) return;
 
     if (isValid) {
       return (
-        <Alert mt={10} title="Congrats!" color="green" withCloseButton>
+        <Alert
+          mt={10}
+          title="Congrats!"
+          color="green"
+          withCloseButton
+          onClose={() => setIsValid(undefined)}
+        >
           Your card number is valid and good to be used.
         </Alert>
       );
     }
 
     return (
-      <Alert mt={10} title="Bummer" color="red" withCloseButton>
+      <Alert
+        mt={10}
+        title="Bummer!"
+        color="red"
+        withCloseButton
+        onClose={() => setIsValid(undefined)}
+      >
         Your card number is not valid. Please try a different one.
       </Alert>
     );
   };
 
-  const handleSubmit = async ({ cardNumber }: FormType) => {
+  const handleOnChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setCardNumber(formatCreditCard(event.currentTarget.value, cardOptions));
+    form.setFieldValue(
+      "cardNumber",
+      formatCreditCard(event.currentTarget.value, cardOptions)
+    );
+  };
+
+  const handleSubmit = async () => {
+    if (!cardNumber) return;
+
     const sanitizedNumber = cardNumber.replace(/\D/g, "");
     setIsLoading(true);
 
@@ -70,6 +111,8 @@ const Home = () => {
 
       if (data.valid) {
         setIsValid(true);
+      } else {
+        setIsValid(false);
       }
     } catch (error) {
       if (error instanceof AxiosError) {
@@ -89,14 +132,14 @@ const Home = () => {
         <Paper radius="md" p="xl" withBorder w={400}>
           <form onSubmit={form.onSubmit(handleSubmit)}>
             <TextInput
+              ref={inputRef}
               required
               withAsterisk
               label="Credit Card Number"
               placeholder="4242..."
-              value={form.values.cardNumber}
-              onChange={(event) =>
-                form.setFieldValue("cardNumber", event.currentTarget.value)
-              }
+              value={cardNumber}
+              {...form.getInputProps("cardNumber")}
+              onChange={handleOnChange}
               error={form.errors.cardNumber}
             />
 
