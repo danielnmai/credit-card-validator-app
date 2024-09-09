@@ -1,6 +1,8 @@
 ## Credit Card Validator
 
-This app is connected to the API server, please make sure you have both up and running locally:
+App is deployed at [http://credit-card-validator-app.s3-website-us-east-1.amazonaws.com/](http://credit-card-validator-app.s3-website-us-east-1.amazonaws.com/)
+
+It is connected to an API server, please make sure you have both up and running locally:
 [Credit Card Validator API](https://github.com/danielnmai/credit-card-validator-api)
 
 ## Getting Started
