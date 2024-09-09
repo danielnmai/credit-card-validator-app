@@ -136,7 +136,7 @@ const Home = () => {
               required
               withAsterisk
               label="Credit Card Number"
-              placeholder="4242..."
+              placeholder="1111 1111 1111 1111"
               value={cardNumber}
               {...form.getInputProps("cardNumber")}
               onChange={handleOnChange}
