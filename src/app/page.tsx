@@ -10,7 +10,7 @@ import {
   TextInput,
 } from "@mantine/core";
 import { matches, useForm } from "@mantine/form";
-import axios, { AxiosError } from "axios";
+import axios from "axios";
 import {
   formatCreditCard,
   registerCursorTracker,
@@ -114,15 +114,14 @@ const Home = () => {
       } else {
         setIsValid(false);
       }
+      form.reset();
     } catch (error) {
-      if (error instanceof AxiosError) {
-        form.setErrors({
-          cardNumber: "Failed to validate card number. Please try again.",
-        });
-      }
+      form.reset();
+      form.setErrors({
+        cardNumber: "Failed to validate card number. Please try again.",
+      });
     } finally {
       setIsLoading(false);
-      form.reset();
     }
   };
 
