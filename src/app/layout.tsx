@@ -1,4 +1,4 @@
-import { ColorSchemeScript, createTheme, MantineProvider } from "@mantine/core";
+import { ColorSchemeScript, MantineProvider } from "@mantine/core";
 import "@mantine/core/styles.css";
 import type { Metadata } from "next";
 import "./globals.css";
@@ -8,9 +8,6 @@ export const metadata: Metadata = {
   description: "A simple app to validate credit card number",
 };
 
-const theme = createTheme({
-  /** Put your mantine theme override here */
-});
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -22,7 +19,7 @@ export default function RootLayout({
         <ColorSchemeScript />
       </head>
       <body>
-        <MantineProvider theme={theme}>
+        <MantineProvider>
           <div id="app">{children}</div>
         </MantineProvider>
       </body>

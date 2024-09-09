@@ -26,7 +26,7 @@ type ResponseData = {
   };
 };
 
-const API = "http://localhost:8000/validate";
+const API_URL = process.env.NEXT_PUBLIC_BASE_URL!;
 
 const Home = () => {
   const inputRef = useRef(null);
@@ -105,7 +105,7 @@ const Home = () => {
     setIsLoading(true);
 
     try {
-      const { data }: ResponseData = await axios.post(API, {
+      const { data }: ResponseData = await axios.post(`${API_URL}/validate`, {
         cardNumber: sanitizedNumber,
       });
 
