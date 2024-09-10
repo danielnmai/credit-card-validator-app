@@ -9,7 +9,7 @@ import {
   Paper,
   TextInput,
 } from "@mantine/core";
-import { matches, useForm } from "@mantine/form";
+import { useForm } from "@mantine/form";
 import axios from "axios";
 import {
   formatCreditCard,
@@ -37,12 +37,6 @@ const Home = () => {
   const form = useForm({
     initialValues: {
       cardNumber: "",
-    },
-    validate: {
-      cardNumber: matches(
-        /\b(?:\d{4}[ -]?){3}(?=\d{4}\b)/,
-        "Invalid card number"
-      ),
     },
   });
 
@@ -114,13 +108,11 @@ const Home = () => {
       } else {
         setIsValid(false);
       }
-      form.reset();
     } catch (error) {
-      form.reset();
-      form.setErrors({
-        cardNumber: "Failed to validate card number. Please try again.",
-      });
+      setIsValid(false);
+      console.error(error);
     } finally {
+      form.reset();
       setIsLoading(false);
     }
   };
@@ -137,9 +129,7 @@ const Home = () => {
               label="Credit Card Number"
               placeholder="1111 1111 1111 1111"
               value={cardNumber}
-              {...form.getInputProps("cardNumber")}
               onChange={handleOnChange}
-              error={form.errors.cardNumber}
             />
 
             <Group justify="flex-end" mt="md">
