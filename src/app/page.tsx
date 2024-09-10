@@ -129,6 +129,7 @@ const Home = () => {
               label="Credit Card Number"
               placeholder="1111 1111 1111 1111"
               value={cardNumber}
+              {...form.getInputProps("cardNumber")}
               onChange={handleOnChange}
             />
 
