@@ -134,7 +134,14 @@ const Home = () => {
             />
 
             <Group justify="flex-end" mt="md">
-              <Button type="submit" loading={isLoading}>
+              <Button
+                type="submit"
+                loading={isLoading}
+                disabled={
+                  cardNumber.replaceAll(" ", "").length !== 16 &&
+                  cardNumber.replaceAll(" ", "").length !== 15
+                }
+              >
                 Check
               </Button>
             </Group>
